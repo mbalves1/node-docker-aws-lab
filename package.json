@@ -8,8 +8,10 @@
     "dev": "tsx watch --env-file=.env src/main/server.ts",
     "build": "tsc",
     "typecheck": "tsc --noEmit",
-    "db:up": "docker compose up -d",
-    "db:down": "docker compose down"
+    "db:up": "docker compose up -d db",
+    "db:down": "docker compose down",
+    "docker:up": "docker compose up -d --build",
+    "docker:logs": "docker compose logs -f api"
   },
   "keywords": [],
   "author": "",

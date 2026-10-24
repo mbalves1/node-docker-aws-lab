@@ -67,6 +67,21 @@ A API sobe em `http://localhost:3000` (ou na `PORT` definida no `.env`).
 
 Na primeira vez que o banco sobe, o arquivo [database/init.sql](database/init.sql) cria a tabela `users` automaticamente.
 
+### Rodando tudo no Docker (API + banco)
+
+É assim que o projeto roda no servidor. Não precisa ter Node instalado, só Docker:
+
+```bash
+cp .env.example .env   # ajuste a senha do banco
+npm run docker:up      # ou: docker compose up -d --build
+```
+
+O [Dockerfile](Dockerfile) compila o TypeScript numa etapa e gera uma imagem final só com o `dist/` e as dependências de produção.
+
+Dentro do Docker, a API acessa o banco pelo nome do serviço (`db`), não por `localhost`. Por isso o `docker-compose.yml` sobrescreve o `DB_HOST`.
+
+A API no Docker e o `npm run dev` usam a mesma porta. Rode um de cada vez, ou pare a API do Docker com `docker compose stop api`.
+
 ## Scripts
 
 | Comando | O que faz |
@@ -75,8 +90,10 @@ Na primeira vez que o banco sobe, o arquivo [database/init.sql](database/init.sq
 | `npm run build` | Compila o TypeScript para `dist/` |
 | `npm start` | Roda a versão compilada (`dist/`). É o comando usado em produção |
 | `npm run typecheck` | Verifica os tipos sem gerar arquivos |
-| `npm run db:up` | Sobe o container do PostgreSQL |
-| `npm run db:down` | Derruba o container (os dados continuam salvos no volume) |
+| `npm run db:up` | Sobe só o container do PostgreSQL (para usar com `npm run dev`) |
+| `npm run docker:up` | Faz o build da imagem e sobe API + banco no Docker |
+| `npm run docker:logs` | Mostra os logs da API no Docker |
+| `npm run db:down` | Derruba todos os containers (os dados continuam salvos no volume) |
 
 Para apagar o banco e recriar do zero (ex.: depois de alterar o `init.sql`):
 
@@ -149,6 +166,6 @@ Localmente elas vêm do arquivo `.env`. No Docker ou na AWS, elas são definidas
 
 ## Próximos passos
 
-- [ ] `Dockerfile` da API
-- [ ] API e banco juntos no `docker-compose.yml`
+- [x] `Dockerfile` da API
+- [x] API e banco juntos no `docker-compose.yml`
 - [ ] Deploy na AWS (EC2 ou ECS + RDS)
